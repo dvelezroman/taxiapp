@@ -1,114 +1,104 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, {Fragment} from 'react';
+import React from "react";
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+	StyleSheet,
+	ScrollView,
+	View,
+	Text,
+	TextInput,
+	Dimensions
+} from "react-native";
+import io from "socket.io-client";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const { width, height } = Dimensions.get("window");
 
-const App = () => {
-  return (
-    <Fragment>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </Fragment>
-  );
-};
+export default class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			message: "",
+			messageStack: []
+		};
+	}
+
+	submitMessage = () => {
+		const { message } = this.state;
+		this.socket.emit("chat message", message);
+		this.setState({ message: "" });
+	};
+
+	componentDidMount() {
+		this.socket = io("http://192.168.1.47:3000");
+		this.socket.on("chat message", msg => {
+			const { messageStack } = this.state;
+			stackUpdated = [...messageStack, msg];
+			this.setState({ messageStack: stackUpdated });
+		});
+	}
+
+	render() {
+		const { messageStack } = this.state;
+		return (
+			<View style={styles.body}>
+				<View style={{ flex: 1 }}>
+					<TextInput
+						style={styles.input}
+						placeholder="Send a message"
+						autoCorrect={false}
+						value={this.state.message}
+						onSubmitEditing={() => this.submitMessage()}
+						onChangeText={message => {
+							this.setState({ message });
+						}}
+					/>
+				</View>
+
+				<View
+					style={{
+						flex: 11,
+						width: width - 20,
+						borderWidth: 1,
+						paddingHorizontal: 5,
+						maxHeight: height - 20
+					}}
+				>
+					<ScrollView>
+						{messageStack.map((message, index) => {
+							return (
+								<View key={index} style={styles.chatBox}>
+									<Text style={styles.text}>{message}</Text>
+								</View>
+							);
+						})}
+					</ScrollView>
+				</View>
+			</View>
+		);
+	}
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+	body: {
+		flex: 1,
+		padding: 20,
+		flexDirection: "column",
+		backgroundColor: Colors.white,
+		justifyContent: "center",
+		alignItems: "center"
+	},
+	text: {
+		color: "#d0d0d0",
+		fontSize: 16
+	},
+	input: {
+		height: 40,
+		width: width - 40,
+		borderWidth: 1
+	},
+	chatBox: {
+		marginVertical: 5,
+		padding: 5,
+		borderWidth: 0.5,
+		backgroundColor: "#00b3fe"
+	}
 });
-
-export default App;
