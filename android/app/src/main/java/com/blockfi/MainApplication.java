@@ -1,4 +1,4 @@
-package com.taxiapp;
+package com.blockfi;
 
 import android.app.Application;
 import android.util.Log;
