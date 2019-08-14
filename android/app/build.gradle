@@ -128,7 +128,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.taxiapp"
+        applicationId "com.blockfi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
