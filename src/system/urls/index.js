@@ -1,5 +1,5 @@
 const urls = {
-	LOGIN: '/user/login'
+  LOGIN: '/user/login',
 };
 
 export default urls;

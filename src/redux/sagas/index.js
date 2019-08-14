@@ -3,5 +3,5 @@ import { LOGIN } from '../actions';
 import userWorker from './user';
 
 export default function* watcher() {
-	yield takeEvery(LOGIN, userWorker);
+  yield takeEvery(LOGIN, userWorker);
 }

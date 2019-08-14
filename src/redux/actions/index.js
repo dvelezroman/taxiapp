@@ -1,1 +1,1 @@
-export { LOGIN } from './user';
+export { LOGIN, SET_LOGGED_USER } from './user';

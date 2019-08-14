@@ -1,10 +1,12 @@
-import { call } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
+import { setloggedUser } from '../creators/user';
 
-export default function* userWorker(values) {
-	try {
-		// yield call(callback, values.payload)
-		console.log('userWorker');
-	} catch (error) {
-		throw new Error(error);
-	}
+function* userWorker(values) {
+  try {
+    yield put(setloggedUser(values.payload));
+  } catch (error) {
+    throw new Error(error);
+  }
 }
+
+export default userWorker;
