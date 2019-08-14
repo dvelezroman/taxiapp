@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import store from './redux/Store';
 import { StyleSheet, View } from 'react-native';
+import DataBase from './business/DataBase';
 import App from './screen/App';
 
 const EntryPoint = () => {

@@ -1,8 +1,16 @@
-import { UserDAO } from './daos/UserDAO';
+import UserDAO from './daos/UserDAO';
 
 class DataBaseRaw {
+	constructor() {
+		this.init();
+	}
+
 	async init() {
-		await UserDAO.init();
+		try {
+			await UserDAO.init();
+		} catch (error) {
+			throw new Error(error);
+		}
 	}
 }
 

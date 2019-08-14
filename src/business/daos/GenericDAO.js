@@ -5,7 +5,7 @@ export default class GenericDAO {
 		this.list = [];
 		this.name = name;
 		this.pk = pk;
-		thi.endpoints = endpoints;
+		this.endpoints = endpoints;
 	}
 
 	async init() {
