@@ -25,17 +25,19 @@ class LoginScreenRaw extends React.Component {
   constructor(props) {
     super(props);
     this.logic = new LoginLogic(this);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.loggedUser.status !== prevProps.loggedUser.status) {
-      this.logic.verifySession();
-    }
+    this.logic.handleLogin.bind(this);
   }
 
   componentDidMount() {
     const { setWorking } = this.props;
     setWorking(false);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { loggedUser } = this.props;
+    if (loggedUser.status !== prevProps.loggedUser.status) {
+      this.logic.verifySession();
+    }
   }
 
   render() {
@@ -85,7 +87,7 @@ class LoginScreenRaw extends React.Component {
             </Grid>
             <Button
               block
-              onPress={this.logic.handleLogin.bind(this)}
+              onPress={() => this.logic.handleLogin()}
               style={{ marginHorizontal: 20, marginVertical: 10, backgroundColor: '#37D3E9' }}
             >
               <Title style={{ color: 'white' }}>Login</Title>
