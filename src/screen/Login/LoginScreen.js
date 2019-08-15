@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Image, ImageBackground } from 'react-native';
 import {
   Container,
@@ -18,15 +19,27 @@ import {
 } from 'native-base';
 import LoginLogic from './LoginLogic';
 import { login } from '../../redux/creators';
+import GenericScreen from '../../HOC/GenericScreen';
 
-class LoginScreen extends React.Component {
+class LoginScreenRaw extends React.Component {
   constructor(props) {
     super(props);
     this.logic = new LoginLogic(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.loggedUser.status !== prevProps.loggedUser.status) {
+      this.logic.verifySession();
+    }
+  }
+
+  componentDidMount() {
+    const { setWorking } = this.props;
+    setWorking(false);
+  }
+
   render() {
-console.log(this.props.loggedUser);
+    const { email, password } = this.state;
     const logo = require('../../../assets/blockfi_login.png');
     const bg = require('../../../assets/bg2x.png');
     return (
@@ -50,7 +63,7 @@ console.log(this.props.loggedUser);
                     placeholder="email"
                     placeholderTextColor="#d0d0d0"
                     style={{ color: 'white' }}
-                    value={this.state.email}
+                    value={email}
                     onChangeText={value => {
                       this.logic.onChange('email', value);
                     }}
@@ -62,7 +75,7 @@ console.log(this.props.loggedUser);
                     placeholder="password"
                     placeholderTextColor="#d0d0d0"
                     style={{ color: 'white' }}
-                    value={this.state.password}
+                    value={password}
                     onChangeText={value => {
                       this.logic.onChange('password', value);
                     }}
@@ -91,6 +104,20 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   login: values => dispatch(login(values)),
 });
+
+LoginScreenRaw.propTypes = {
+  loggedUser: PropTypes.shape({
+    status: PropTypes.bool,
+    token: PropTypes.string,
+    user: PropTypes.shape({
+      email: PropTypes.string,
+      password: PropTypes.string,
+    }),
+  }).isRequired,
+  setWorking: PropTypes.func.isRequired,
+};
+
+const LoginScreen = GenericScreen(LoginScreenRaw);
 
 export default connect(
   mapStateToProps,
