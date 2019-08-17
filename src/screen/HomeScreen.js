@@ -1,18 +1,44 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { connect } from 'react-redux';
+import { Container, Header, Content, Button, Title, Right, Left, Body } from 'native-base';
+import { logout } from '../redux/creators/user';
+import ROUTES from '../router/Routes';
+
+const mapStateToProps = state => ({
+  loggedUser: state.userReducer,
+});
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout()),
+});
 
 class HomeScreen extends React.Component {
-  componentDidMount() {
-    console.log('Home');
-  }
+  logout = () => {
+    this.props.logout();
+    this.props.navigation.navigate(ROUTES.LOGIN);
+  };
 
   render() {
     return (
-      <View>
-        <Text>Home Screen</Text>
-      </View>
+      <Container>
+        <Header>
+          <Left />
+          <Body>
+            <Title>Home</Title>
+          </Body>
+          <Right />
+        </Header>
+        <Content>
+          <Button onPress={() => this.logout()}>
+            <Title>Log Out</Title>
+          </Button>
+        </Content>
+      </Container>
     );
   }
 }
 
-export default HomeScreen;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeScreen);
