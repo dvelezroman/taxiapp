@@ -93,6 +93,7 @@ class LoginScreenRaw extends React.Component {
 						<Title style={{ color: 'white' }}>Login</Title>
 					</Button>
 				</Content>
+
 				{/* </ImageBackground> */}
 			</Container>
 		);
