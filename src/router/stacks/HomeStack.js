@@ -2,13 +2,13 @@ import { createStackNavigator } from 'react-navigation';
 
 import ROUTES from '../Routes';
 
-import HomeScreen from '../../screen/HomeScreen';
+import PassengerScreen from '../../screen/Passenger/PassengerScreen';
 
 const HomeStack = createStackNavigator(
-  {
-    [ROUTES.APP]: HomeScreen,
-  },
-  { headerMode: 'none' }
+	{
+		[ROUTES.APP]: PassengerScreen
+	},
+	{ headerMode: 'none' }
 );
 
 export default HomeStack;
