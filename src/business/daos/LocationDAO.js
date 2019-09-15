@@ -43,7 +43,7 @@ class LocationDAORaw {
 	}
 
 	async getRouteDirection(destination) {
-		const origin = this.position.coords;
+		const origin = this.position ? this.position.coords : { latitude: -34.61, longitude: -58.37 };
 		let endpoint = APIS.direction.replace('{origin}', `${origin.latitude},${origin.longitude}`);
 		endpoint = endpoint.replace('{destination}', `place_id:${destination.place_id}`);
 		try {
@@ -54,6 +54,7 @@ class LocationDAORaw {
 				return { latitude: point[0], longitude: point[1] };
 			});
 			return {
+				geocoded_waypoints: data.geocoded_waypoints,
 				distance: data.routes[0].legs[0].distance,
 				duration: data.routes[0].legs[0].duration,
 				pointCoords

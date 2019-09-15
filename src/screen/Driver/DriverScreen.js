@@ -1,24 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import socketIO from 'socket.io-client';
 import { StyleSheet, Dimensions } from 'react-native';
 import { View } from 'react-native';
-import {
-	Container,
-	Header,
-	Content,
-	Button,
-	Title,
-	Right,
-	Left,
-	Body,
-	Input,
-	Grid,
-	Row,
-	Text
-} from 'native-base';
+import { Container, Header, Content, Button, Title, Right, Left, Body } from 'native-base';
 import DriverLogic from './DriverLogic';
 import { logout } from '../../redux/creators/user';
-import MapComponent from './component/MapComponent';
+import MapComponent from '../Common/MapComponent';
+import { URL_SERVER } from '../../../keys';
 
 const { height, width } = Dimensions.get('window');
 
@@ -34,10 +23,19 @@ class DriverScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.logic = new DriverLogic(this);
+		this.connectSocket();
 	}
 
+	connectSocket = () => {
+		this.socket = socketIO.connect(URL_SERVER);
+		this.socket.on('request_driver', ({ pointCoords, geocoded_waypoints }) => {
+			this.logic.getRouteDirection({ place_id: geocoded_waypoints[0].place_id });
+			this.setState({ travel: pointCoords });
+		});
+	};
+
 	render() {
-		const { text, predictions, pointCoords, distance, duration } = this.state;
+		const { pointCoords } = this.state;
 		return (
 			<Container>
 				<Header>
@@ -47,49 +45,16 @@ class DriverScreen extends React.Component {
 						</Button>
 					</Left>
 					<Body>
-						<Title>Home</Title>
+						<Title>Driver</Title>
 					</Body>
 					<Right />
 				</Header>
 				<Content scrollEnabled={false}>
-					<View style={styles.destinationItem}>
-						<Input
-							style={styles.input}
-							placeholderTextColor={'#c0c0c0'}
-							placeholder='A donde vamos?'
-							value={text}
-							onChangeText={value => {
-								this.logic.onChangeDestination(value);
-							}}
-						/>
-						{predictions.map(prediction => (
-							<Button
-								key={prediction.id}
-								transparent
-								onPress={() => this.logic.onSelectDestination(prediction)}
-							>
-								<Title style={styles.prediction}>{prediction.description}</Title>
-							</Button>
-						))}
+					<View style={styles.buttonItem}>
+						<Button block onPress={() => this.logic.requestPassengers(this.socket)}>
+							<Title>Buscar Pasajeros</Title>
+						</Button>
 					</View>
-					{!predictions.length > 0 && (
-						<View style={styles.summaryItem}>
-							<Grid>
-								<Row>
-									<Title style={{ color: 'black' }}>Estadisticas del Viaje</Title>
-								</Row>
-								<Row>
-									<Text>{`Distancia: ${distance && distance.text}`}</Text>
-								</Row>
-								<Row>
-									<Text>{`Tiempo: ${duration && duration.text}`}</Text>
-								</Row>
-								<Row>
-									<Text>{`Valor: $ 1.50`}</Text>
-								</Row>
-							</Grid>
-						</View>
-					)}
 					<MapComponent pointCoords={pointCoords} />
 				</Content>
 			</Container>
@@ -103,29 +68,13 @@ export default connect(
 )(DriverScreen);
 
 const styles = StyleSheet.create({
-	destinationItem: {
+	buttonItem: {
 		position: 'absolute',
 		backgroundColor: '#fafafa',
 		width: width - 40,
-		marginTop: 20,
+		marginTop: height - 150,
 		alignSelf: 'center',
 		marginHorizontal: 10,
-		paddingHorizontal: 10,
 		zIndex: 10
-	},
-	summaryItem: {
-		position: 'absolute',
-		backgroundColor: '#fafafa',
-		width: width - 40,
-		marginTop: 80,
-		alignSelf: 'center',
-		marginHorizontal: 10,
-		paddingHorizontal: 10,
-		zIndex: 10
-	},
-	prediction: {
-		color: '#000000',
-		fontSize: 16,
-		height: 40
 	}
 });

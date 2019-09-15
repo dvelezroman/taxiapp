@@ -1,10 +1,10 @@
 import React from 'react';
 import { Dimensions, PermissionsAndroid } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline, Marker } from 'react-native-maps';
-import LocationDAO from '../../../business/daos/LocationDAO';
+import LocationDAO from '../../business/daos/LocationDAO';
 import { View } from 'native-base';
 
-import { API_KEY } from '../../../../keys';
+import { API_KEY } from '../../../keys';
 
 const { height, width } = Dimensions.get('window');
 

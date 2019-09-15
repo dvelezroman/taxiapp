@@ -12,11 +12,13 @@ class PassengerLogic {
 			pointCoords: [],
 			distance: null,
 			duration: null,
-			destination: null
+			destination: null,
+			geocoded_waypoints: []
 		};
 		this.state = screen.state;
 		this.props = screen.props;
 		this.onChangeDestination = this.onChangeDestination.bind(screen);
+		this.requestDriver = this.requestDriver.bind(screen);
 	}
 
 	logout = () => {
@@ -37,9 +39,19 @@ class PassengerLogic {
 	};
 
 	getRouteDirection = async destination => {
-		const { distance, duration, pointCoords } = await LocationDAO.getRouteDirection(destination);
-		this.setState({ pointCoords, distance, duration });
+		const {
+			distance,
+			duration,
+			pointCoords,
+			geocoded_waypoints
+		} = await LocationDAO.getRouteDirection(destination);
+		this.setState({ pointCoords, distance, duration, geocoded_waypoints });
 	};
+
+	requestDriver(socket) {
+		const { pointCoords, geocoded_waypoints } = this.state;
+		socket.emit('request_driver', { pointCoords, geocoded_waypoints });
+	}
 }
 
 export default PassengerLogic;

@@ -15,7 +15,8 @@ import {
 	Button,
 	Grid,
 	Row,
-	Item
+	Item,
+	CheckBox
 } from 'native-base';
 import LoginLogic from './LoginLogic';
 import { login } from '../../redux/creators';
@@ -41,7 +42,7 @@ class LoginScreenRaw extends React.Component {
 	}
 
 	render() {
-		const { email, password } = this.state;
+		const { email, password, driver } = this.state;
 		// const logo = require('../../../assets/blockfi_login.png');
 		// const bg = require('../../../assets/bg2x.png');
 		return (
@@ -82,6 +83,19 @@ class LoginScreenRaw extends React.Component {
 										this.logic.onChange('password', value);
 									}}
 								/>
+							</Item>
+							<Item style={{ borderBottomWidth: 0, marginVertical: 10, height: 25 }}>
+								<Item
+									regular
+									onPress={() => this.logic.onChange('driver', !driver)}
+									style={{
+										height: 20,
+										width: 20,
+										borderWidth: 0.5,
+										backgroundColor: driver ? 'blue' : 'white'
+									}}
+								/>
+								<Text style={{ paddingLeft: 20 }}>Driver</Text>
 							</Item>
 						</Row>
 					</Grid>

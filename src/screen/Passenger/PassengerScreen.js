@@ -17,8 +17,10 @@ import {
 	Text
 } from 'native-base';
 import PassengerLogic from './PassengerLogic';
+const socketIO = require('socket.io-client');
+import { URL_SERVER } from '../../../keys';
 import { logout } from '../../redux/creators/user';
-import MapComponent from './component/MapComponent';
+import MapComponent from '../Common/MapComponent';
 
 const { height, width } = Dimensions.get('window');
 
@@ -36,7 +38,12 @@ class PassengerScreen extends React.Component {
 		this.logic = new PassengerLogic(this);
 	}
 
+	componentDidMount = () => {
+		this.socket = socketIO.connect(URL_SERVER);
+	};
+
 	render() {
+		console.log(this.state);
 		const { text, predictions, pointCoords, distance, duration } = this.state;
 		return (
 			<Container>
@@ -47,7 +54,7 @@ class PassengerScreen extends React.Component {
 						</Button>
 					</Left>
 					<Body>
-						<Title>Home</Title>
+						<Title>Passsenger</Title>
 					</Body>
 					<Right />
 				</Header>
@@ -72,7 +79,7 @@ class PassengerScreen extends React.Component {
 							</Button>
 						))}
 					</View>
-					{!predictions.length > 0 && (
+					{pointCoords.length > 0 && (
 						<View style={styles.summaryItem}>
 							<Grid>
 								<Row>
@@ -88,6 +95,13 @@ class PassengerScreen extends React.Component {
 									<Text>{`Valor: $ 1.50`}</Text>
 								</Row>
 							</Grid>
+						</View>
+					)}
+					{pointCoords.length > 0 && (
+						<View style={styles.buttonItem}>
+							<Button block onPress={() => this.logic.requestDriver(this.socket)}>
+								<Title>Solicitar Conductor</Title>
+							</Button>
 						</View>
 					)}
 					<MapComponent pointCoords={pointCoords} />
@@ -127,5 +141,14 @@ const styles = StyleSheet.create({
 		color: '#000000',
 		fontSize: 16,
 		height: 40
+	},
+	buttonItem: {
+		position: 'absolute',
+		backgroundColor: '#fafafa',
+		width: width - 40,
+		marginTop: height - 150,
+		alignSelf: 'center',
+		marginHorizontal: 10,
+		zIndex: 10
 	}
 });
