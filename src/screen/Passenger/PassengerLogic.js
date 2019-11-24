@@ -14,7 +14,9 @@ class PassengerLogic {
 			duration: null,
 			destination: null,
 			geocoded_waypoints: [],
-			requesting_driver: false
+			requesting_driver: false,
+			driverIsOnTheWay: false,
+			driverLocation: null
 		};
 		this.state = screen.state;
 		this.props = screen.props;

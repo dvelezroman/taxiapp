@@ -14,7 +14,8 @@ import {
 	Input,
 	Grid,
 	Row,
-	Text
+	Text,
+	Icon
 } from 'native-base';
 import PassengerLogic from './PassengerLogic';
 const socketIO = require('socket.io-client');
@@ -42,13 +43,20 @@ class PassengerScreen extends React.Component {
 	connectSocket = () => {
 		this.socket = socketIO.connect(URL_SERVER);
 		this.socket.on('accepted_trip', location => {
-			this.setState({ requesting_driver: false });
-			console.log({ location });
+			this.setState({ requesting_driver: false, driverIsOnTheWay: true, driverLocation: location });
 		});
 	};
 
 	render() {
-		const { text, predictions, pointCoords, distance, duration } = this.state;
+		const {
+			text,
+			predictions,
+			pointCoords,
+			distance,
+			duration,
+			driverIsOnTheWay,
+			driverLocation
+		} = this.state;
 		return (
 			<Container>
 				<Header>
@@ -108,7 +116,11 @@ class PassengerScreen extends React.Component {
 							</Button>
 						</View>
 					)}
-					<MapComponent pointCoords={pointCoords} />
+					<MapComponent
+						pointCoords={pointCoords}
+						driverIsOnTheWay={driverIsOnTheWay}
+						driverLocation={driverLocation}
+					/>
 				</Content>
 			</Container>
 		);

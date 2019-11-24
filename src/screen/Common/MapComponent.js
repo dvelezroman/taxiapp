@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, PermissionsAndroid } from 'react-native';
+import { Dimensions, PermissionsAndroid, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline, Marker } from 'react-native-maps';
 import LocationDAO from '../../business/daos/LocationDAO';
 import { View } from 'native-base';
@@ -38,7 +38,9 @@ class MapComponent extends React.Component {
 				this.setState({
 					pointCoords,
 					latitude: position.coords.latitude,
-					longitude: position.coords.longitude
+					longitude: position.coords.longitude,
+					driverIsOnTheWay: false,
+					driverLocation: null
 				});
 			})
 			.catch(response => {
@@ -49,7 +51,15 @@ class MapComponent extends React.Component {
 
 	static getDerivedStateFromProps(nextProps, prevState) {
 		if (nextProps.pointCoords.length !== prevState.pointCoords.length) {
-			return { pointCoords: nextProps.pointCoords };
+			return {
+				pointCoords: nextProps.pointCoords
+			};
+		}
+		if (nextProps.driverIsOnTheWay !== prevState.driverIsOnTheWay) {
+			return {
+				driverIsOnTheWay: nextProps.driverIsOnTheWay,
+				driverLocation: nextProps.driverLocation
+			};
 		}
 		return null;
 	}
@@ -61,9 +71,17 @@ class MapComponent extends React.Component {
 	}
 
 	render() {
-		const { latitude, longitude, pointCoords } = this.state;
+		const { latitude, longitude, pointCoords, driverIsOnTheWay, driverLocation } = this.state;
 		const marker = pointCoords.length ? (
 			<Marker coordinate={pointCoords[pointCoords.length - 1]} title='Destino' />
+		) : null;
+		const driverMarker = driverIsOnTheWay ? (
+			<Marker coordinate={driverLocation} title='Conductor'>
+				<Image
+					source={require('../../assets/driver.png')}
+					style={{ width: 40, height: 40 }}
+				></Image>
+			</Marker>
 		) : null;
 		return (
 			<View>
@@ -85,6 +103,7 @@ class MapComponent extends React.Component {
 					showsUserLocation={true}
 				>
 					{marker}
+					{driverMarker}
 					<Polyline coordinates={pointCoords} strokeColor='red' strokeWidth={2} />
 				</MapView>
 			</View>
