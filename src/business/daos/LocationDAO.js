@@ -48,7 +48,6 @@ class LocationDAORaw {
 		endpoint = endpoint.replace('{destination}', `place_id:${destination.place_id}`);
 		try {
 			const { data } = await axios.get(endpoint);
-			console.log(data);
 			const points = PolyLine.decode(data.routes[0].overview_polyline.points);
 			const pointCoords = points.map(point => {
 				return { latitude: point[0], longitude: point[1] };

@@ -13,7 +13,8 @@ class PassengerLogic {
 			distance: null,
 			duration: null,
 			destination: null,
-			geocoded_waypoints: []
+			geocoded_waypoints: [],
+			requesting_driver: false
 		};
 		this.state = screen.state;
 		this.props = screen.props;
@@ -49,6 +50,7 @@ class PassengerLogic {
 	};
 
 	requestDriver(socket) {
+		this.setState({ requesting_driver: true });
 		const { pointCoords, geocoded_waypoints } = this.state;
 		socket.emit('request_driver', { pointCoords, geocoded_waypoints });
 	}

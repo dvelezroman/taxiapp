@@ -1,0 +1,10 @@
+cd $PROJECT_DIRECTORY && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+
+        rm -rf $PROJECT_DIRECTORY/android/app/src/main/res/drawable-*
+        rm -rf $PROJECT_DIRECTORY/android/app/src/main/res/raw
+
+        cd $PROJECT_DIRECTORY/android/
+        ./gradlew clean
+        ./gradlew assembleRelease
+
+        adb install -r $PROJECT_DIRECTORY/android/app/build/outputs/apk/release/app-release.apk

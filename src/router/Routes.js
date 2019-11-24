@@ -5,7 +5,8 @@ const ROUTES = {
 	SIGNUP: 'SignUp',
 	HOME: 'Home',
 	PASSENGER: 'Passenger',
-	DRIVER: 'Driver'
+	DRIVER: 'Driver',
+	SEARCH_CLIENT: 'SearchClient'
 };
 
 export default ROUTES;

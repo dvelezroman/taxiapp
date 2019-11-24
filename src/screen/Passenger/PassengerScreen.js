@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Dimensions } from 'react-native';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import {
 	Container,
 	Header,
@@ -36,14 +36,18 @@ class PassengerScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.logic = new PassengerLogic(this);
+		this.connectSocket();
 	}
 
-	componentDidMount = () => {
+	connectSocket = () => {
 		this.socket = socketIO.connect(URL_SERVER);
+		this.socket.on('accepted_trip', location => {
+			this.setState({ requesting_driver: false });
+			console.log({ location });
+		});
 	};
 
 	render() {
-		console.log(this.state);
 		const { text, predictions, pointCoords, distance, duration } = this.state;
 		return (
 			<Container>
@@ -54,7 +58,7 @@ class PassengerScreen extends React.Component {
 						</Button>
 					</Left>
 					<Body>
-						<Title>Passsenger</Title>
+						<Title style={{ alignSelf: 'center' }}>Client</Title>
 					</Body>
 					<Right />
 				</Header>
